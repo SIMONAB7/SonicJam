@@ -1,0 +1,271 @@
+.App {
+  text-align: center;
+  background-color: #7656ac; /* Desired background */
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.App-header {
+  background-color: transparent; /* Let parent background show */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(124, 24, 24);
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* General Styles */
+body {
+  margin: 0;
+  height: 100%;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95.8%;
+  background-color: #381d51;
+  color: white;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(to right,#6c4393, #381d51);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* .nav a {
+  display: inline-block;
+  position:relative;
+  text-decoration:none;
+  padding:10px;
+  font-size:18px;
+  font-family: sans-serif;
+  color:#fff;
+  text-transform:uppercase;
+  transition:0.5s;
+}
+
+.nav a:hover {
+  transform:scale(2);
+  opacity:1;
+  filter:blur(0);
+  text-decoration:none;
+  color:#fff;
+} */
+
+/* NavBar */
+
+ul{
+  margin:0;
+  padding:0;
+  display:flex;
+}
+
+ul li{
+  list-style:none;
+  margin:0 20px;
+  transition:0.5s;
+}
+
+ul li a{
+  display: block;
+  align-items: center;
+  position:relative;
+  text-decoration:none;
+  padding:7px;
+  font-size:15px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  color:#fff;
+  text-transform:uppercase;
+  transition:0.5s;
+}
+
+ul:hover li a{
+  transform:scale(1);
+  opacity:0.2;
+  filter:blur(5px);
+}
+
+ul li a:hover{
+  transform:scale(1.2);
+  opacity:1;
+  filter:blur(0);
+  text-decoration:none;
+  color:#fff;
+}
+
+ul li a:before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#381d51;
+  transition:0.5s;
+  transform-origin:right;
+  transform:scaleX(0);
+  z-index:-1;
+}
+
+ul li a:hover:before{
+  transition:transform 0.5s;
+  transform-origin:left;
+  transform:scaleX(1);
+}
+
+/* --------- */
+
+.search {
+  display:inline-flex;
+  align-items: center;
+}
+
+.search input {
+  padding: 7px;
+  margin-right: 20px;
+  margin-top: 7px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Banner */
+.banner img {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+  margin: 1rem 0;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1; /* Pushes the footer to the bottom */
+  display: flex;
+  width: 80%;
+  margin: 1rem auto;
+  gap: 1rem;
+}
+
+.sidebar {
+  width: 20%;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.left-sidebar h3,
+.right-sidebar h3 {
+  color: #381d51;
+  border-bottom: 2px solid #381d51;
+  margin-bottom: 1rem;
+}
+
+.signup-box {
+  margin-top: 3rem;
+}
+
+.box {
+  margin-bottom: 3rem;
+  margin-top: 3rem;
+  font-size: large;
+}
+
+.box a{
+  text-decoration: none;
+}
+
+.box:hover {
+  text-decoration: underline;
+}
+
+.center-content {
+  color: #381d51;
+  width: 60%;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Footer */
+.footer {
+  width: 100%;
+  background-color: #381d51;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: auto;
+  background: linear-gradient(to right, #381d51, #6c4393);
+}
+
+/* Buttons and Inputs */
+button {
+  padding: 0.5rem 1rem;
+  background-color: #381d51;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:0.5s;
+  transform-origin:center;  
+  transform:scaleX(1);
+}
+
+button:hover {
+  background-color: #6c4393;
+  transform-origin:center;
+  transform:scaleX(1.2);
+}
+
+
+input {
+  padding: 0.5rem;
+  width: 80%;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
