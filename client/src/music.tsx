@@ -14,11 +14,12 @@ const Music: React.FC = () => {
 //   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/music') 
+    fetch('http://localhost:5000/api/music') // Local server URL
       .then((response) => response.json())
       .then((data) => setMusicData(data))
       .catch((error) => console.error('Error fetching music data:', error));
   }, []);
+
 
 //   return (
 //     <div>

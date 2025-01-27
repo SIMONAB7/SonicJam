@@ -1,39 +1,60 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
+const path = require('path');
 const username = encodeURIComponent("<username>");
 const password = encodeURIComponent("<password>");
 // const MyModel = require('./models/MyModel');
-const cors = require('cors');
 // const MusicSchema = require('./models/MyModel')
 const MusicModel = require('./models/MyModel');
-
-//--------
-const path = require('path');
-app.use(express.static(path.join(__dirname, '../client/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
-//-----testing
 
 dotenv.config(); // Load .env variables
 
 const app = express();
 
-// Middleware
-app.use(express.json());
-console.log('MongoDB URI:', process.env.MONGO_URI);
-// MongoDB Connection
-mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('MongoDB connection error:', err));
+// //--------
 
+// app.use(express.static(path.join(__dirname, '../client/build')));
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+// });
+// //-----testing
+
+// Middleware
+app.use(cors({ origin: 'http://localhost:3000' })); // Allow requests from React app
 app.use(express.json());
+
+//app.use(express.json()); oldd
+//console.log('MongoDB URI:', process.env.MONGO_URI);
+
+// MongoDB Connection
+// mongoose
+//     .connect(process.env.MONGO_URI)
+//     .then(() => console.log('Connected to MongoDB'))
+//     .catch((err) => console.error('MongoDB connection error:', err)); olldddd-------
+
+console.log('MongoDB URI:', process.env.MONGO_URI);
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+
 
 // Routes
-app.get('/', (req, res) => {
-    res.send('Hello from SonicJam Backend');
+// app.get('/', (req, res) => {
+//     res.send('Hello from SonicJam Backend');
+// }); oldssddddd
+
+app.get('/api/music', async (req, res) => {
+  try {
+    const music = await MusicModel.find(); // Fetch all records
+    console.log('Fetched Music Data:', music);
+    res.json(music);
+  } catch (err) {
+    console.error('Error fetching music data:', err);
+    res.status(500).json({ error: 'Failed to fetch music data' });
+  }
 });
 
 // Example Schema
@@ -60,6 +81,12 @@ app.get('/api/music', async (req, res) => {
   }
 });
 
+// Serve static files from React build folder (for production)
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 
 // test route to fetch data
 // app.get('/api/data', async (req, res) => {
@@ -72,7 +99,8 @@ app.get('/api/music', async (req, res) => {
 //     }
 //   });
 
-// Start Server
+//Start Server
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
