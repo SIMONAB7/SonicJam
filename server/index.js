@@ -14,10 +14,10 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-
+console.log('MongoDB URI:', process.env.MONGO_URI);
 // MongoDB Connection
 mongoose
-    .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((err) => console.error('MongoDB connection error:', err));
 

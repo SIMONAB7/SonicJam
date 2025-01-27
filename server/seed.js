@@ -47,10 +47,10 @@ const MusicModel = require('./models/MyModel'); // Ensure this path is correct
 // const MusicModel = require('./transformed_guitarDB.json'); // Update the path if your model is in a different file
 
 dotenv.config(); // Load environment variables
-
+console.log('MongoDB URI:', process.env.MONGO_URI);
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
 
