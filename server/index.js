@@ -8,6 +8,14 @@ const cors = require('cors');
 // const MusicSchema = require('./models/MyModel')
 const MusicModel = require('./models/MyModel');
 
+//--------
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../client/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+//-----testing
+
 dotenv.config(); // Load .env variables
 
 const app = express();
