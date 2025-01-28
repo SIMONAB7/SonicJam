@@ -81,14 +81,15 @@ app.get('/api/music', async (req, res) => {
   }
 });
 
-// Serve static files from the React app
-const clientBuildPath = path.join(__dirname, '../client/build');
-app.use(express.static(clientBuildPath));
 
-// Catch-all handler to return React's index.html for any route
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Handle any other routes and serve the React app
 app.get('*', (req, res) => {
-  res.sendFile(path.join(clientBuildPath, 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
+
 
 // test route to fetch data
 // app.get('/api/data', async (req, res) => {
