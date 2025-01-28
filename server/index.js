@@ -15,7 +15,7 @@ const app = express();
 
 const allowedOrigins = ['http://localhost:3000', //local
  'https://sonicjam.onrender.com', //render backend
- 'https://sonic-jam-4vqe.vercel.app']; //vercel frontend
+ 'https://sonic-jam-4vqe.vercel.app']; //vercel front
 
 
 // //--------
@@ -27,20 +27,16 @@ const allowedOrigins = ['http://localhost:3000', //local
 // //-----testing
 
 // Middleware
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-  })
-);
-
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+}));
 app.use(express.json());
-
 
 //app.use(express.json()); oldd
 //console.log('MongoDB URI:', process.env.MONGO_URI);
@@ -74,7 +70,7 @@ app.get('/api/music', async (req, res) => {
   }
 });
 
-//Schema
+// Example Schema
 const DataSchema = new mongoose.Schema({
     name: String,
     value: String,
@@ -99,18 +95,14 @@ app.use(cors());
 // });
 
 
-// // Serve static files from the React app
-// app.use(express.static(path.join(__dirname, '../client/build')));
-
-// // Handle any other routes and serve the React app
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-// });oldway
-
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Handle any other routes and serve the React app
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
+
 
 // test route to fetch data
 // app.get('/api/data', async (req, res) => {
