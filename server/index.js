@@ -8,6 +8,7 @@ const password = encodeURIComponent("<password>");
 // const MyModel = require('./models/MyModel');
 // const MusicSchema = require('./models/MyModel')
 const MusicModel = require('./models/MyModel');
+const allowedOrigins = ['http://localhost:3000', 'https://sonicjam.onrender.com', 'https://sonic-jam-4vqe.vercel.app'];
 
 dotenv.config(); // Load .env variables
 
@@ -22,7 +23,15 @@ const app = express();
 // //-----testing
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000' })); // Allow requests from React app
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+}));
 app.use(express.json());
 
 //app.use(express.json()); oldd
