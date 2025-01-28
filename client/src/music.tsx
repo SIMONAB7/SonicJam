@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import './music.css';
+
 Modal.setAppElement('#root'); 
+
 const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/music';
 
 const Music: React.FC = () => {
@@ -15,7 +17,7 @@ const Music: React.FC = () => {
 //   }, []);
 
   useEffect(() => {
-    fetch(apiUrl) // Local server URL
+    fetch(apiUrl) 
       .then((response) => response.json())
       .then((data) => setMusicData(data))
       .catch((error) => console.error('Error fetching music data:', error));
