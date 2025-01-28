@@ -94,8 +94,6 @@ app.get('/api/music', async (req, res) => {
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
 
-app.use('/api/music', musicRouter);
-
 // Handle any other routes and serve the React app
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
