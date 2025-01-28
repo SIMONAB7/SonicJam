@@ -82,7 +82,7 @@ app.use(cors());
 app.get('/api/music', async (req, res) => {
   try {
     const music = await MusicModel.find(); // Fetch all records
-    console.log('Fetched Music Data:', music); // Add this log
+    console.log('Fetched Music Data:', music);
     res.json(music);
   } catch (err) {
     console.error('Error fetching music data:', err);
@@ -93,6 +93,8 @@ app.get('/api/music', async (req, res) => {
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
+
+app.use('/api/music', musicRouter);
 
 // Handle any other routes and serve the React app
 app.get('*', (req, res) => {
