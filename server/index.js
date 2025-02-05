@@ -38,49 +38,11 @@ app.use(cors({
 }));
 app.use(express.json());
 
-//app.use(express.json()); oldd
-//console.log('MongoDB URI:', process.env.MONGO_URI);
-
-// MongoDB Connection
-// mongoose
-//     .connect(process.env.MONGO_URI)
-//     .then(() => console.log('Connected to MongoDB'))
-//     .catch((err) => console.error('MongoDB connection error:', err)); olldddd-------
-
 console.log('MongoDB URI:', process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err));
-
-
-// Routes
-// app.get('/', (req, res) => {
-//     res.send('Hello from SonicJam Backend');
-// }); oldssddddd
-
-app.get('/api/music', async (req, res) => {
-  try {
-    const music = await MusicModel.find(); // Fetch all records
-    console.log('Fetched Music Data:', music);
-    res.json(music);
-  } catch (err) {
-    console.error('Error fetching music data:', err);
-    res.status(500).json({ error: 'Failed to fetch music data' });
-  }
-});
-
-// Example Schema
-const DataSchema = new mongoose.Schema({
-    name: String,
-    value: String,
-  });
-  
-  const DataModel = mongoose.model('Data', DataSchema);
-  
-
-
-app.use(cors());
 
 
 // app.get('/api/music', async (req, res) => {
@@ -94,6 +56,42 @@ app.use(cors());
 //   }
 // });
 
+app.get('/api/music', async (req, res) => {
+  try {
+    // Fetch all records
+    const music = await MusicModel.find();
+
+    // Filter out duplicate songs (keep highest rated version for each title, artist, and key)
+    const uniqueSongs = Object.values(
+      music.reduce((acc, song) => {
+        const key = `${song.title}-${song.artist}-${song.key}`;
+        if (!acc[key] || acc[key].ratings < song.ratings) {
+          acc[key] = song;
+        }
+        return acc;
+      }, {})
+    );
+
+    console.log('Filtered Music Data:', uniqueSongs);
+    res.json(uniqueSongs);
+  } catch (err) {
+    console.error('Error fetching music data:', err);
+    res.status(500).json({ error: 'Failed to fetch music data' });
+  }
+});
+
+
+// Example Schema
+const DataSchema = new mongoose.Schema({
+    name: String,
+    value: String,
+  });
+  
+  const DataModel = mongoose.model('Data', DataSchema);
+  
+
+
+app.use(cors());
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
