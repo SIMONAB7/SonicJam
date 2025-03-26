@@ -157,7 +157,7 @@ router.post('/', authMiddleware, upload.single('videoFile'), async (req, res) =>
 });
 
 // Delete a video
-router.delete('/:id', authenticateToken, async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const video = await Video.findById(req.params.id);
     if (!video) return res.status(404).json({ message: 'Video not found.' });
