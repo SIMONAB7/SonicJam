@@ -1,0 +1,229 @@
+import React, { useState, useEffect } from 'react';
+import './profile.css';
+import UserVideos from './userVideos';
+
+const Profile: React.FC = () => {
+
+  //checks which tab is active to switch between shown content 
+  const [activeTab, setActiveTab] = useState<'posts' | 'media' | 'likes'>('posts');
+
+  // Load stored images 
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [bannerImage, setBannerImage] = useState<string | null>(null);
+  const [username, setUsername] = useState('');
+  const [description, setDescription] = useState('');
+
+
+  // 🔹 Fetch User Data (Runs Once on Load)
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const token = localStorage.getItem('token');
+  //     if (!token) return;
+
+  //     try {
+  //       const response = await fetch("http://localhost:5000/api/auth/profile", {
+  //         method: "GET",
+  //         headers: {
+  //           "Authorization": token,
+  //         }
+  //       });
+  //       const data = await response.json();
+  //       if (response.ok) {
+  //         setProfileImage(data.profileImage);
+  //         setBannerImage(data.bannerImage);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     }
+  //   };
+
+  //   fetchUserData();
+  // }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No authentication token found");
+        return;
+      }
+  
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/profile", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) throw new Error("Failed to fetch user data");
+  
+        const data = await response.json();
+        if (data.name) setUsername(data.name);
+        if (data.description) setDescription(data.description);
+
+  
+        // ✅ Update state with correct image URLs
+        if (data.profileImage) {
+          setProfileImage(data.profileImage);
+          localStorage.setItem("profileImage", data.profileImage);
+        }
+        if (data.bannerImage) {
+          setBannerImage(data.bannerImage);
+          localStorage.setItem("bannerImage", data.bannerImage);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: "profile" | "banner"
+  ) => {
+    if (!event.target.files || event.target.files.length === 0) return;
+  
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append(type === "profile" ? "profileImage" : "bannerImage", file); // Use correct field name
+  
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No authentication token found");
+        return;
+      }
+  
+      const response = await fetch("http://localhost:5000/api/auth/update-images", {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,  // Include the Bearer token
+        },
+        body: formData,  // Send FormData
+      });
+  
+      if (!response.ok) {
+        const errorMsg = await response.text();
+        console.error("Image Upload Failed:", errorMsg);
+        return;
+      }
+  
+      const data = await response.json();
+      console.log("Image Updated Successfully:", data);
+  
+      if (type === "profile") {
+        setProfileImage(data.user.profileImage);
+        localStorage.setItem("profileImage", data.user.profileImage);
+      }
+      if (type === "banner") {
+        setBannerImage(data.user.bannerImage);
+        localStorage.setItem("bannerImage", data.user.bannerImage);
+      }
+    } catch (error) {
+      console.error("Error updating image:", error);
+    }
+  };
+
+  const handleDescriptionUpdate = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+  
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/update-description", {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ description }),
+      });
+  
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.msg || "Failed to update");
+  
+      console.log("Description saved:", data.description);
+    } catch (err) {
+      console.error("Failed to save description:", err);
+    }
+  };
+  
+  
+//main body
+  return (
+    <div className="profile-container">
+      {/* Banner Section */}
+      <label 
+        className="profile-banner"
+        style={{
+            backgroundImage: bannerImage ? `url(${bannerImage})` : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+        }}
+    >
+        { !bannerImage && <h2>Upload Banner image</h2> } 
+        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "banner")} />
+    </label>
+
+      {/* Profile Info Section */}
+      <div className="profile-info">
+        <label 
+            className="profile-picture"
+            style={{
+                backgroundImage: profileImage ? `url(${profileImage})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+            }}
+        >
+          { !profileImage && <h2>Upload image</h2> } 
+          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "profile")} />
+        </label>
+        
+        <div className="profile-details">
+          <h3>{username}</h3>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            onBlur={handleDescriptionUpdate}
+            placeholder="Add a description..."
+            style={{
+              background: 'transparent',
+              color: 'white',
+              border: 'none',
+              resize: 'none',
+              outline: 'none',
+              fontSize: '14px',
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="profile-tabs">
+        <div className={`profile-tab ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>
+          Posts
+        </div>
+        <div className={`profile-tab ${activeTab === 'media' ? 'active' : ''}`} onClick={() => setActiveTab('media')}>
+          Media
+        </div>
+        <div className={`profile-tab ${activeTab === 'likes' ? 'active' : ''}`} onClick={() => setActiveTab('likes')}>
+          Likes
+        </div>
+      </div>
+
+      {/* Dynamic Content Based on Selected Tab */}
+      <div className="profile-content">
+        {activeTab === 'posts' && <UserVideos/>}
+        {activeTab === 'media' && <p>Here are your media files...</p>}
+        {activeTab === 'likes' && <p>Here are your liked posts...</p>}
+      </div>
+    </div>
+  );
+};
+
+export default Profile;

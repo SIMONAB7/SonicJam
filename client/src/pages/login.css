@@ -1,0 +1,103 @@
+/* Login/register Page Styling */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    color: white;
+}
+
+/* SonicJam logo */
+.logo {
+    width: 350px;
+}
+
+
+/* Login box */
+.login-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    padding: 30px;
+    background-color: #000;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/*login page*/
+.login-box h1 {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+/*register page*/
+.login-box h2 {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 50px;
+    width: 500px;
+}
+
+/* Form Inputs */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #555;
+    border-radius: 7px;
+    background-color: #333;
+    color: white;
+}
+
+/* Login button */
+.login-btn {
+    width: 100%;
+    align-items: center;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: #43255E;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background-color: #6c4393;
+    width: 90%;
+}
+
+/* Sign-up link */
+.signup-text {
+    margin-top: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.signup-text:hover {
+    text-decoration: none;
+}
+
+.signup-text a {
+    text-decoration: none;
+    font-size: large;
+    color: rgb(163, 141, 27);
+}
+
+.signup-text a:hover{
+    color: #8b22ed;
+    text-decoration:underline;
+}
