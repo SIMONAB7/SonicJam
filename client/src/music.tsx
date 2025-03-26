@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import './music.css';
+import API_BASE_URL from "./conifg";
 
 Modal.setAppElement('#root'); 
 
@@ -23,11 +24,11 @@ const Music: React.FC<MusicProps> = ({ searchQuery, setSearchQuery }) => {
   //     .catch((error) => console.error('Error fetching music data:', error));
   // }, []);
   useEffect(() => {
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/music';
+    // const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/music';
   
     const fetchData = async () => {
       try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch(`${API_BASE_URL}/api/music`, {//apiUrl
           cache: "no-store" // Ensure fresh data is fetched
         });
         const data = await response.json();

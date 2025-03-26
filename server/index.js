@@ -86,11 +86,11 @@ function startServer() {
   app.use('/api/videos', videoRoutes);
 
 
-  // Serve static React frontend
-  app.use(express.static(path.join(__dirname, '../client/build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-  });
+  // // Serve static React frontend
+  // app.use(express.static(path.join(__dirname, '../client/build')));
+  // app.get('*', (req, res) => {
+  //   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  // });
 
 
   const PORT = process.env.PORT || 5000;
