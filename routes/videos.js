@@ -95,7 +95,8 @@
 
 const path = require('path');
 const fs = require('fs');
-const { authenticateToken } = require('../middleware/authMiddleware');
+// const { authenticateToken } = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 const express = require('express');
 const multer = require('multer');
 const Video = require('../server/models/Video');
