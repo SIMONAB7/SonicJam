@@ -134,7 +134,7 @@ router.get('/', async (req, res) => {
 });
 
 // Upload new video
-router.post('/', authenticateToken, upload.single('videoFile'), async (req, res) => {
+router.post('/', authMiddleware, upload.single('videoFile'), async (req, res) => {
   try {
     const video = new Video({
       title: req.body.title,
