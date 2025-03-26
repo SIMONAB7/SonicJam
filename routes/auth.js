@@ -7,6 +7,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const multer = require("multer");
 const path = require("path");
 require('dotenv').config(); //  Load .env file
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 
 // REGISTER USER
 router.post('/register', async (req, res) => {
@@ -138,10 +139,10 @@ router.put('/update-images', authMiddleware, upload.fields([
     if (!user) return res.status(404).json({ msg: "User not found" });
 
     if (req.files.profileImage) {
-      user.profileImage = `http://localhost:5000/uploads/${req.files.profileImage[0].filename}`;
+      user.profileImage = `${BASE_URL}/uploads/${req.files.profileImage[0].filename}`;
     }
     if (req.files.bannerImage) {
-      user.bannerImage = `http://localhost:5000/uploads/${req.files.bannerImage[0].filename}`;
+      user.bannerImage = `${BASE_URL}/uploads/${req.files.bannerImage[0].filename}`; //old with hardcoded localhost:5000
     }
 
     await user.save();
