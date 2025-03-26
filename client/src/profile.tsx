@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './profile.css';
 import UserVideos from './userVideos';
+import API_BASE_URL from "./conifg";
+
 
 const Profile: React.FC = () => {
 
@@ -49,7 +51,7 @@ const Profile: React.FC = () => {
       }
   
       try {
-        const response = await fetch("http://localhost:5000/api/auth/profile", {
+        const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {//"http://localhost:5000/api/auth/profile"
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
