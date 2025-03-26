@@ -266,7 +266,12 @@ const Videos: React.FC = () => {
       setShowModal(false);
       fetchVideos();
     } catch (err) {
-      console.error('Upload error:', err);
+      // console.error('Upload error:', err);
+      if (axios.isAxiosError(err)) {
+        console.error("Upload error:", err.response?.data || err.message);
+      } else {
+        console.error("Unknown upload error:", err);
+      }//new      
     }
   };
 

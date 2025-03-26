@@ -310,7 +310,7 @@ const App: React.FC = () => {
           {location.pathname !== "/profile" && ( // Hide Banner ONLY on Profile Page
           <div className="banner">
             <img
-              src="/banner2.jpg"
+              src="/banner2.JPG"
               alt="Banner"
             />
           </div>
