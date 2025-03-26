@@ -42,6 +42,32 @@
 // };
 
 
+// const jwt = require('jsonwebtoken');
+
+// const authMiddleware = function (req, res, next) {
+//   const authHeader = req.header('Authorization');
+
+//   if (!authHeader) {
+//     console.log("No Token Provided");
+//     return res.status(401).json({ msg: "No token, authorization denied" });
+//   }
+
+//   const token = authHeader.startsWith("Bearer ")
+//     ? authHeader.split(" ")[1]
+//     : authHeader;
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     req.user = { id: decoded.id };
+//     next();
+//   } catch (err) {
+//     console.error("Invalid Token:", err);
+//     res.status(401).json({ msg: "Invalid token" });
+//   }
+// };
+
+// module.exports = authMiddleware;
+
 const jwt = require('jsonwebtoken');
 
 const authMiddleware = function (req, res, next) {
@@ -58,7 +84,16 @@ const authMiddleware = function (req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.id };
+
+    // ✅ Add both forms of access:
+    req.user = {
+      id: decoded.id,   // for routes expecting req.user.id
+      _id: decoded.id   // for Mongoose-style consistency (optional but nice)
+    };
+
+    // ✅ Also set req.userId directly for routes that just use it raw
+    req.userId = decoded.id;
+
     next();
   } catch (err) {
     console.error("Invalid Token:", err);
