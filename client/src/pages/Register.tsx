@@ -49,6 +49,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css"; // Reuse the same CSS as Login for styling consistency
+import API_BASE_URL from "../conifg";
 
 const Register: React.FC = () => {
   const [name, setName] = useState("");
@@ -60,7 +61,7 @@ const Register: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, { //"http://localhost:5000/api/auth/register"
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),

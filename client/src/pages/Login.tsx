@@ -55,6 +55,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css"; // Ensure you have a CSS file for styling
+import API_BASE_URL from "../conifg";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -87,7 +88,7 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {//new/ old- hardcoded localhost:5000
         method: "POST",
         headers: {
           "Content-Type": "application/json",
