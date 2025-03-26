@@ -93,12 +93,13 @@
 // module.exports = router;
 
 
-const express = require('express');
-const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const Video = require('../server/models/Video');
 const { authenticateToken } = require('../middleware/authMiddleware');
+const express = require('express');
+const multer = require('multer');
+const Video = require('../server/models/Video');
+const User = require('../server/models/User'); // import user model
 
 const router = express.Router();
 
