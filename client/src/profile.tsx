@@ -100,7 +100,7 @@ const Profile: React.FC = () => {
         return;
       }
   
-      const response = await fetch("http://localhost:5000/api/auth/update-images", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/update-images`, {//"http://localhost:5000/api/auth/update-images"
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,  // Include the Bearer token
@@ -135,7 +135,7 @@ const Profile: React.FC = () => {
     if (!token) return;
   
     try {
-      const res = await fetch("http://localhost:5000/api/auth/update-description", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/update-description`, {//"http://localhost:5000/api/auth/update-description"
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
