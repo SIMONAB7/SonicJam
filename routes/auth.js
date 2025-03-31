@@ -154,9 +154,21 @@ router.put('/update-images', authMiddleware, upload.fields([
 });
 
 
+// router.get('/profile', authMiddleware, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user).select('name email profileImage bannerImage description');
+//     if (!user) return res.status(404).json({ msg: "User not found" });
+
+//     res.json(user);
+//   } catch (err) {
+//     console.error("Error fetching user:", err);
+//     res.status(500).json({ msg: "Server error" });
+//   }
+// });
+
 router.get('/profile', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user).select('name email profileImage bannerImage description');
+    const user = await User.findById(req.user).select('name email profileImage bannerImage description following');
     if (!user) return res.status(404).json({ msg: "User not found" });
 
     res.json(user);
@@ -165,6 +177,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 });
+
 
 router.put('/update-description', authMiddleware, async (req, res) => {
   try {
@@ -180,6 +193,112 @@ router.put('/update-description', authMiddleware, async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 });
+
+
+// get all users except logged in user
+router.get('/users', authMiddleware, async (req, res) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.user.id } }).select('_id name profileImage bannerImage followers');
+
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+
+// follow user
+router.put('/follow/:id', authMiddleware, async (req, res) => {
+  const targetId = req.params.id;
+  const currentId = req.user.id;
+
+  if (targetId === currentId) return res.status(400).json({ msg: "You can't follow yourself" });
+
+  try {
+    await User.findByIdAndUpdate(targetId, { $addToSet: { followers: currentId } });
+    await User.findByIdAndUpdate(currentId, { $addToSet: { following: targetId } });
+    res.json({ msg: 'Followed' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Follow failed' });
+  }
+});
+
+// unfollow user
+router.put('/unfollow/:id', authMiddleware, async (req, res) => {
+  const targetId = req.params.id;
+  const currentId = req.user.id;
+
+  try {
+    await User.findByIdAndUpdate(targetId, { $pull: { followers: currentId } });
+    await User.findByIdAndUpdate(currentId, { $pull: { following: targetId } });
+    res.json({ msg: 'Unfollowed' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Unfollow failed' });
+  }
+});
+
+// // public view of user profile
+// router.get('/user/:id', authMiddleware, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id).select('name profileImage bannerImage description');
+//     if (!user) return res.status(404).json({ msg: 'User not found' });
+//     res.json(user);
+//   } catch (err) {
+//     res.status(500).json({ msg: 'Server error' });
+//   }
+// });
+
+// router.get('/user/:id', authMiddleware, async (req, res) => {
+//   try {
+//     const viewedUser = await User.findById(req.params.id)
+//       .select('name profileImage bannerImage description followers following');
+
+//     if (!viewedUser) return res.status(404).json({ msg: 'User not found' });
+
+//     const isFollowing = viewedUser.followers.includes(req.user.id);
+
+//     res.json({
+//       ...viewedUser.toObject(),
+//       followersCount: 0,
+//       followingCount: 0,
+//       "isFollowing": false,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ msg: 'Server error' });
+//   }
+// });
+
+router.get('/user/:id', authMiddleware, async (req, res) => {
+  try {
+    const viewedUser = await User.findById(req.params.id)
+      .populate('followers')  // ✅ ensure data is populated
+      .populate('following')  // ✅ ensure data is populated
+      .select('_id name profileImage bannerImage description followers following');
+
+    if (!viewedUser) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const isFollowing = viewedUser.followers.some(
+      follower => follower._id.toString() === req.user.id
+    );
+
+    res.json({
+      _id: viewedUser._id,
+      name: viewedUser.name,
+      profileImage: viewedUser.profileImage,
+      bannerImage: viewedUser.bannerImage,
+      description: viewedUser.description,
+      followersCount: viewedUser.followers.length,
+      followingCount: viewedUser.following.length,
+      isFollowing,
+    });
+  } catch (err) {
+    console.error("Failed to load user profile:", err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
 
 
 module.exports = router;

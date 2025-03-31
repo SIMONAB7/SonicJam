@@ -208,10 +208,10 @@ const Profile: React.FC = () => {
       {/* Navigation Tabs */}
       <div className="profile-tabs">
         <div className={`profile-tab ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>
-          Posts
+          Videos
         </div>
         <div className={`profile-tab ${activeTab === 'media' ? 'active' : ''}`} onClick={() => setActiveTab('media')}>
-          Media
+          Posts
         </div>
         <div className={`profile-tab ${activeTab === 'likes' ? 'active' : ''}`} onClick={() => setActiveTab('likes')}>
           Likes

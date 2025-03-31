@@ -254,12 +254,15 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './profile';
 import Videos from './videos';
+import ViewProfile from './viewProfile';
+import RecentPosts from './components/recentPosts';
+import PostModal from './components/postModal';
 
 const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const location = useLocation();
   const navigate = useNavigate();
-  
+  const [showModal, setShowModal] = useState(false);
   const isAuthenticated = !!localStorage.getItem('token');
 
   const handleLogout = () => {
@@ -299,15 +302,7 @@ const App: React.FC = () => {
               )}
             </div>
           </header>
-
-          {/* Banner */}
-          {/* <div className="banner">
-            <img
-              src="https://www.freewebheaders.com/wp-content/gallery/arts-entertainment-size-800x200/colorful-music-notes-on-dark-purple-banner-background_size-800x200.jpg"
-              alt="Banner"
-            />
-          </div> */}
-          {location.pathname !== "/profile" && ( // Hide Banner ONLY on Profile Page
+          {location.pathname !== "/profile" && !location.pathname.startsWith("/view-profile") &&( // Hide Banner ONLY on Profile Page
           <div className="banner">
             <img
               src="/banner2.JPG"
@@ -315,7 +310,6 @@ const App: React.FC = () => {
             />
           </div>
         )}
-        
         </>
       )}
 
@@ -335,22 +329,24 @@ const App: React.FC = () => {
               </aside>
 
               {/* Center Content */}
-              <main className="center-content">
+              <main className="center-content" style={{ position: 'relative' }}>
                 <h1>Welcome to SonicJam</h1>
-                <p>content???</p>
+                <RecentPosts />
+                {isAuthenticated && (
+                  <button className="create-post-btn" onClick={() => setShowModal(true)}>+</button>
+                )}
+                {showModal && <PostModal onClose={() => setShowModal(false)} />}
               </main>
             </div>
           }
         />
         <Route path="/find-people" element={<FindPeople />} />
-        <Route
-          path="/music"
-          element={<Music searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
-        />
+        <Route path="/music" element={<Music searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}/>
         <Route path="/videos" element={<Videos />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path="/view-profile/:id" element={<ViewProfile />} />
       </Routes>
 
       {/* Footer (Only Show if Not on Login/Register Page) */}

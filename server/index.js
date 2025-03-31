@@ -7,10 +7,9 @@ const path = require('path');
 const MusicModel = require('./models/MyModel'); // Ensure correct path
 const authRoutes = require('../routes/auth');
 const authMiddleware = require('../middleware/authMiddleware');
-
-
+const videoRoutes = require('../routes/videos');
+const postRoutes = require('../routes/post');
 const app = express();
-
 
 // CORS Configuration
 app.use(cors({
@@ -54,6 +53,9 @@ async function connectDB() {
 
 function startServer() {
   app.use('/api/auth', authRoutes);
+  app.use('/api/videos', videoRoutes);
+  app.use('/api/posts', postRoutes);
+
 
   app.get('/api/test', (req, res) => {
     res.json({ msg: "API is working!" });
@@ -82,10 +84,7 @@ function startServer() {
     }
   });
 
-  const videoRoutes = require('../routes/videos');
-  app.use('/api/videos', videoRoutes);
-
-
+  
   // // Serve static React frontend
   // app.use(express.static(path.join(__dirname, '../client/build')));
   // app.get('*', (req, res) => {
