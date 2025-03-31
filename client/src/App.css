@@ -74,28 +74,6 @@ body {
   font-weight: bold;
 }
 
-/* .nav a {
-  display: inline-block;
-  position:relative;
-  text-decoration:none;
-  padding:10px;
-  font-size:18px;
-  font-family: sans-serif;
-  color:#fff;
-  text-transform:uppercase;
-  transition:0.5s;
-}
-
-.nav a:hover {
-  transform:scale(2);
-  opacity:1;
-  filter:blur(0);
-  text-decoration:none;
-  color:#fff;
-} */
-
-/* NavBar */
-
 ul{
   margin:0;
   padding:0;
@@ -162,7 +140,7 @@ ul li a:hover:before{
   display:inline-flex;
   align-items: center;
   width: 15%;
-  height: 40px; /* Fixed height to maintain consistency */
+  height: 40px; 
   justify-content: flex-end;
 }
 
@@ -185,7 +163,7 @@ ul li a:hover:before{
 /* Main Content */
 .main-content {
   display: flex;
-  height: calc(100vh - 250px); /* Adjust for banner/header height */
+  height: calc(100vh - 250px); 
   overflow: hidden;
   margin: 1rem auto;
   width: 80%;
