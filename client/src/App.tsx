@@ -329,13 +329,15 @@ const App: React.FC = () => {
               </aside>
 
               {/* Center Content */}
-              <main className="center-content" style={{ position: 'relative' }}>
+              <main className="center-content">
                 <h1>Welcome to SonicJam</h1>
                 <RecentPosts />
+
                 {isAuthenticated && (
                   <button className="create-post-btn" onClick={() => setShowModal(true)}>+</button>
                 )}
                 {showModal && <PostModal onClose={() => setShowModal(false)} />}
+
               </main>
             </div>
           }

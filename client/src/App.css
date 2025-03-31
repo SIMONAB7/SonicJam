@@ -235,10 +235,13 @@ ul li a:hover:before{
 
 .center-content {
   flex-grow: 1;
+  height: 100%;
   overflow-y: auto;
-  max-height: 100%;
   color: #381d51;
   width: 60%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   background-color: #fff;
   padding: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -329,7 +332,6 @@ button:hover {
   transform:scaleX(1.2);
 }
 
-
 input {
   padding: 0.5rem;
   width: 80%;
@@ -338,25 +340,28 @@ input {
   border-radius: 4px;
 }
 
-
-.create-post-btn{
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
+.create-post-btn {
+  position: sticky;
+  align-self: flex-end;
+  bottom: 50px;
+  margin-top: auto;
   font-size: 32px;
   color: white;
   background-color: #6c4393;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-radius: 30%;
+  width: 50px;
+  height: 50px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   transition: 0.3s ease;
-  /* z-index: 1000; */
-  z-index: 10;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 999;
 }
 
-.create-post-btn:hover{
+.create-post-btn:hover {
   transform: scale(1.1);
   background-color: #381d51;
 }
