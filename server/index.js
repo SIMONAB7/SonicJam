@@ -26,6 +26,8 @@ app.use(cors({
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res, path) => {
     res.set('Cross-Origin-Resource-Policy', 'cross-origin'); // ✅ Fix CORB Blocking
+    res.setHeader('Access-Control-Allow-Origin', '*');//new
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');//new
   }
 }));
 
