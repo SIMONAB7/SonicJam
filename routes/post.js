@@ -5,15 +5,12 @@ const User = require('../server/models/User');
 const authMiddleware = require('../middleware/authMiddleware');
 
 // GET /api/posts - Get posts from followed users + self
+// In post.js - Update GET /api/posts
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).populate('following');
+    const user = await User.findById(req.user.id);
+    const followingIds = [...user.following, user._id];
 
-    // Collect the IDs of followed users + self
-    const followingIds = user.following.map(f => f._id.toString());
-    followingIds.push(user._id.toString());
-
-    // Fetch posts from those users
     const posts = await Post.find({ userId: { $in: followingIds } })
       .populate('userId', 'name profileImage')
       .sort({ createdAt: -1 })
@@ -26,18 +23,17 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-//Detele /api/posts - deletes a post made by the user
-router.delete('/:id', async (req, res) => {
-    try {
-      const post = await Post.findByIdAndDelete(req.params.id);
-      if (!post) return res.status(404).json({ message: 'Post not found' });
-      res.json({ message: 'Post deleted successfully' });
-    } catch (error) {
-      console.error("Delete error:", error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
-  
+// DELETE /api/posts/:id - Delete a post
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+    res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // POST /api/posts - Share a song link
 router.post('/', authMiddleware, async (req, res) => {
@@ -64,51 +60,67 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
-//like route to allow users to like posts
+// PUT /api/posts/:id/like - Like/unlike a post
 router.put('/:id/like', authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ msg: 'Post not found' });
 
     const userId = req.user.id;
-    const liked = post.likes.includes(userId);
+    const alreadyLiked = post.likes.includes(userId);
 
-    if (liked){
+    if (alreadyLiked) {
       post.likes.pull(userId);
     } else {
       post.likes.push(userId);
     }
 
     await post.save();
-    res.json({ likes: post.likes.length });
+
+    res.json({ likes: post.likes });
   } catch (err) {
-    res.status(500).json({ msg: 'Failed to trigger like' });
+    console.error("Like error:", err);
+    res.status(500).json({ msg: 'Failed to toggle like' });
   }
 });
 
-//commenting route to allow users to comment on posts
+// POST /api/posts/:id/comment - Add comment to post
 router.post('/:id/comment', authMiddleware, async (req, res) => {
   try {
     const { text } = req.body;
     if (!text) return res.status(400).json({ msg: 'Comment is empty' });
 
+    const currentUser = await User.findById(req.user.id).select('name');
+    if (!currentUser) return res.status(404).json({ msg: 'User not found' });
+
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ msg: 'Post not found' });
 
-    post.comments.push({
+    // Store both ID AND name in the comment
+    const newComment = {
       userId: req.user.id,
+      userName: currentUser.name, // Add this line
       text,
-    });
-
+      createdAt: new Date()
+    };
+    
+    post.comments.push(newComment);
     await post.save();
-
-    const populated = await post.populate('comments.userId', 'name profileImage');
-    res.status(201).json(populated.comments.at(-1));
+    
+    // Return the comment with all needed data
+    res.status(201).json({
+      _id: post.comments[post.comments.length - 1]._id,
+      text,
+      createdAt: new Date(),
+      userId: {
+        _id: req.user.id,
+        name: currentUser.name
+      }
+    });
   } catch (err) {
     console.error("❌ Comment error:", err);
     res.status(500).json({ msg: 'Failed to add comment' });
   }
 });
-
 
 module.exports = router;

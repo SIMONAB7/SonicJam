@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import API_BASE_URL from '../config';
 import './recentPosts.css';
 
+interface User {
+  _id: string;
+  name: string;
+  profileImage?: string;
+}
+
 interface Comment {
   _id: string;
-  userId: {
-    _id: string;
-    name: string;
-    profileImage?: string;
-  };
+  userId: string; 
+  userName?: string; 
   text: string;
   createdAt: string;
 }
@@ -38,22 +41,28 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
   const token = localStorage.getItem("token");
   const currentUserId = localStorage.getItem("userId");
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/posts`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        const filtered = userId
-          ? data.filter((post: Post) => post.userId._id === userId)
-          : data;
-        setPosts(filtered.reverse());
-      } catch (err) {
-        console.error("Error loading posts:", err);
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/posts`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      
+      // Debug log the first comment to check structure
+      if (data[0]?.comments?.length > 0) {
+        console.log("First post's first comment:", data[0].comments[0]);
       }
-    };
-
+      
+      const filtered = userId
+        ? data.filter((post: Post) => post.userId._id === userId)
+        : data;
+      setPosts(filtered);
+    } catch (err) {
+      console.error("Error loading posts:", err);
+    }
+  };
+  
+  useEffect(() => {
     fetchPosts();
   }, [userId]);
 
@@ -71,25 +80,20 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
 
   const handleLike = async (postId: string) => {
     try {
-      // Add additional logging for debugging
-      console.log(`Liking post: ${postId} with token: ${token ? "present" : "missing"}`);
-      
       const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/like`, {
         method: "PUT",
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"  // Add this
+          "Content-Type": "application/json",
         },
       });
-      
-      console.log("Like response status:", res.status);
-      
+
       if (res.ok) {
         const updated = await res.json();
         setPosts(prev =>
           prev.map(p =>
             p._id === postId
-              ? { ...p, likes: updated.likes ? updated.likes : [] }
+              ? { ...p, likes: updated.likes ?? [] }
               : p
           )
         );
@@ -101,14 +105,12 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
       console.error("Like failed", err);
     }
   };
-  
+
   const handleComment = async (postId: string) => {
     const text = commentText[postId]?.trim();
     if (!text) return;
-  
+
     try {
-      console.log(`Commenting on post: ${postId} with token: ${token ? "present" : "missing"}`);
-      
       const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/comment`, {
         method: "POST",
         headers: {
@@ -117,16 +119,19 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
         },
         body: JSON.stringify({ text }),
       });
-      
-      console.log("Comment response status:", res.status);
-      
+
       if (res.ok) {
         const newComment = await res.json();
+        console.log("New comment received:", newComment);
+        
         setPosts(prev =>
-          prev.map(p =>
-            p._id === postId
-              ? { ...p, comments: [...(p.comments || []), newComment] }
-              : p
+          prev.map(post =>
+            post._id === postId
+              ? {
+                  ...post,
+                  comments: [...(post.comments || []), newComment],
+                }
+              : post
           )
         );
         setCommentText(prev => ({ ...prev, [postId]: '' }));
@@ -165,33 +170,38 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
                 </a>
               </div>
 
-              <div className="post-actions">
-                <button onClick={() => handleLike(post._id)} className="like-button">
-                  ❤️ {post.likes?.length || 0}
-                </button>
-              </div>
+              <div className="interaction-row">
+                <div className="left-actions">
+                  <button onClick={() => handleLike(post._id)} className="like-button">
+                    ❤️ {post.likes?.length || 0}
+                  </button>
+                </div>
 
-              <div className="comment-section">
-                <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={commentText[post._id] || ''}
-                  onChange={(e) =>
-                    setCommentText(prev => ({ ...prev, [post._id]: e.target.value }))
-                  }
-                />
-                <button onClick={() => handleComment(post._id)}>Post</button>
-
-                {Array.isArray(post.comments) && post.comments.length > 0 && (
-                  <div className="comment-list">
-                    {post.comments.map((cmt, idx) => (
-                      <div className="comment" key={idx}>
-                        <strong>{cmt.userId?.name}:</strong> {cmt.text}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="right-actions comment-input">
+                  <input
+                    type="text"
+                    placeholder="Add a comment..."
+                    value={commentText[post._id] || ''}
+                    onChange={(e) =>
+                      setCommentText(prev => ({ ...prev, [post._id]: e.target.value }))
+                    }
+                  />
+                  <button onClick={() => handleComment(post._id)}>Post</button>
+                </div>
               </div>
+              {Array.isArray(post.comments) && post.comments.length > 0 && (
+                <div className="comment-list">
+                  {post.comments.map((comment, idx) => (
+                    <div className="comment" key={comment._id || idx}>
+                      <strong>
+                        {comment.userId === currentUserId 
+                          ? 'You' 
+                          : comment.userName || 'User'}:
+                      </strong> {comment.text}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

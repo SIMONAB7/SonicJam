@@ -1,113 +1,152 @@
 .recent-posts {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 700px;
-  }
-  
-  .post-card {
-    background: #f4ebff;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  }
-  
-  .post-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  
-  .post-user img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .recent-post-description {
-    margin-top: 10px;
-    margin-bottom: 15px;
-    font-style: italic;
-    color: #444;
-  }
-  
-  .post-link a {
-    text-decoration: none;
-    color: #fff;
-    background: #5e239d;
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-weight: bold;
-  }
-  
-  .delete-post-btn {
-    background-color: #902828;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 15px;
-    cursor: pointer;
-    display: block;
-    margin-left: auto;
-    transition: background-color 2s ease;
-    border: solid 1px red;
-  }
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .delete-post-btn:hover{
-    background-color: #e60000;
-    transition: background-colour 0.8s ease;
-  }
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 700px;
+}
 
-  .post-username {
-    color: black;
-    font-weight: bold;
-  }
+.post-card {
+  background: #f4ebff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
 
-  .post-actions button {
-    background: none;
-    border: none;
-    color: red;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 5px;
-  }
-  
-  .like-button {
-    background: none;
-    border: none;
-    color: red;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  
-  .comment-section {
-    margin-top: 10px;
-  }
-  
-  .comment-section input {
-    width: 70%;
-    padding: 4px;
-    margin-right: 6px;
-  }
-  
-  .comment-list {
-    margin-top: 8px;
-    font-size: 14px;
-  }
-  
-  .comment {
-    margin-bottom: 6px;
-  }
-  
-  
+.post-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.post-user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-username {
+  color: black;
+  font-weight: bold;
+}
+
+.recent-post-description {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  font-style: italic;
+  color: #444;
+}
+
+.post-link a {
+  text-decoration: none;
+  color: #fff;
+  background: #5e239d;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.delete-post-btn {
+  background-color: #902828;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: auto;
+  border: solid 1px red;
+  transition: background-color 0.8s ease;
+}
+
+.delete-post-btn:hover {
+  background-color: #e60000;
+}
+
+/* === INTERACTION ROW === */
+.interaction-row {
+  display: flex;
+  justify-content: center; /* ✅ centers the entire row */
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+
+
+.left-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Like Button */
+.like-button {
+  border: none;
+  background: none;
+  color: red;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.like-button:hover {
+  opacity: 0.8;
+  background: none;
+}
+
+/* Comment Input */
+.comment-input input {
+  padding: 5px 10px;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 120px;
+}
+
+.comment-input button {
+  font-size: 14px;
+  padding: 6px 10px;
+  background-color: #2d0a52;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.comment-input button:hover {
+  opacity: 0.9;
+}
+
+/* COMMENT LIST */
+.comment-list {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
