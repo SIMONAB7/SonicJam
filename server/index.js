@@ -25,7 +25,7 @@ app.use(cors({
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res, path) => {
-    res.set('Cross-Origin-Resource-Policy', 'cross-origin'); // ✅ Fix CORB Blocking
+    res.set('Cross-Origin-Resource-Policy', 'cross-origin'); // Fix CORB Blocking
     res.setHeader('Access-Control-Allow-Origin', '*');//new
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');//new
   }
@@ -33,22 +33,22 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 
 app.use(express.json());
 
-// ✅ Ensure MongoDB Connects Before Routes Load
+//  Ensure MongoDB Connects Before Routes Load
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("✅ MongoDB Connected Successfully");
+    console.log("MongoDB Connected Successfully");
 
-    console.log("🔹 Waiting for Mongoose to be ready...");
+    console.log("--- Waiting for Mongoose to be ready...");
     while (mongoose.connection.readyState !== 1) {
       console.log(`🔄 Mongoose state: ${mongoose.connection.readyState}`);
       await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    console.log("✅ Mongoose is Ready!");
+    console.log("Mongoose is Ready!");
     startServer();
   } catch (err) {
-    console.error("❌ MongoDB Connection Error:", err);
+    console.error("MongoDB Connection Error:", err);
     process.exit(1);
   }
 }
@@ -78,7 +78,7 @@ function startServer() {
         }, {})
       );
 
-      console.log('Filtered Music Data:', uniqueSongs);
+      console.log('Filtered Music Data: Completed', uniqueSongs);
       res.json(uniqueSongs);
     } catch (err) {
       console.error('Error fetching music data:', err);
@@ -86,16 +86,8 @@ function startServer() {
     }
   });
 
-  
-  // // Serve static React frontend
-  // app.use(express.static(path.join(__dirname, '../client/build')));
-  // app.get('*', (req, res) => {
-  //   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-  // });
-
-
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 connectDB();
 

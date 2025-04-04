@@ -49,7 +49,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css"; // Reuse the same CSS as Login for styling consistency
-import API_BASE_URL from "../conifg";
+import API_BASE_URL from "../config";
 
 const Register: React.FC = () => {
   const [name, setName] = useState("");

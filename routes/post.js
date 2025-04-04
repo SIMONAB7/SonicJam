@@ -64,4 +64,51 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
+//like route to allow users to like posts
+router.put('/:id/like', authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ msg: 'Post not found' });
+
+    const userId = req.user.id;
+    const liked = post.likes.includes(userId);
+
+    if (liked){
+      post.likes.pull(userId);
+    } else {
+      post.likes.push(userId);
+    }
+
+    await post.save();
+    res.json({ likes: post.likes.length });
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to trigger like' });
+  }
+});
+
+//commenting route to allow users to comment on posts
+router.post('/:id/comment', authMiddleware, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ msg: 'Comment is empty' });
+
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ msg: 'Post not found' });
+
+    post.comments.push({
+      userId: req.user.id,
+      text,
+    });
+
+    await post.save();
+
+    const populated = await post.populate('comments.userId', 'name profileImage');
+    res.status(201).json(populated.comments.at(-1));
+  } catch (err) {
+    console.error("❌ Comment error:", err);
+    res.status(500).json({ msg: 'Failed to add comment' });
+  }
+});
+
+
 module.exports = router;

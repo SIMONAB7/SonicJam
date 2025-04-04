@@ -1,46 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './profile.css';
 import UserVideos from './userVideos';
-import API_BASE_URL from "./conifg";
+import API_BASE_URL from "./config";
+import RecentPosts from './components/recentPosts';
 
 
 const Profile: React.FC = () => {
 
   //checks which tab is active to switch between shown content 
-  const [activeTab, setActiveTab] = useState<'posts' | 'media' | 'likes'>('posts');
+  const [activeTab, setActiveTab] = useState<'videos' | 'posts' | 'likes'>('videos');
 
   // Load stored images 
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [bannerImage, setBannerImage] = useState<string | null>(null);
   const [username, setUsername] = useState('');
   const [description, setDescription] = useState('');
-
-
-  // 🔹 Fetch User Data (Runs Once on Load)
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const token = localStorage.getItem('token');
-  //     if (!token) return;
-
-  //     try {
-  //       const response = await fetch("http://localhost:5000/api/auth/profile", {
-  //         method: "GET",
-  //         headers: {
-  //           "Authorization": token,
-  //         }
-  //       });
-  //       const data = await response.json();
-  //       if (response.ok) {
-  //         setProfileImage(data.profileImage);
-  //         setBannerImage(data.bannerImage);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -207,10 +181,10 @@ const Profile: React.FC = () => {
 
       {/* Navigation Tabs */}
       <div className="profile-tabs">
-        <div className={`profile-tab ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>
+        <div className={`profile-tab ${activeTab === 'videos' ? 'active' : ''}`} onClick={() => setActiveTab('videos')}>
           Videos
         </div>
-        <div className={`profile-tab ${activeTab === 'media' ? 'active' : ''}`} onClick={() => setActiveTab('media')}>
+        <div className={`profile-tab ${activeTab === 'posts' ? 'active' : ''}`} onClick={() => setActiveTab('posts')}>
           Posts
         </div>
         <div className={`profile-tab ${activeTab === 'likes' ? 'active' : ''}`} onClick={() => setActiveTab('likes')}>
@@ -220,8 +194,8 @@ const Profile: React.FC = () => {
 
       {/* Dynamic Content Based on Selected Tab */}
       <div className="profile-content">
-        {activeTab === 'posts' && <UserVideos/>}
-        {activeTab === 'media' && <p>Here are your media files...</p>}
+        {activeTab === 'videos' && <UserVideos/>}
+        {activeTab === 'posts' && <RecentPosts userId={localStorage.getItem("userId") || ''} />}
         {activeTab === 'likes' && <p>Here are your liked posts...</p>}
       </div>
     </div>

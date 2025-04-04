@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './postModal.css';
-import API_BASE_URL from '../conifg';
+import API_BASE_URL from '../config';
 
 interface Props {
   onClose: () => void;

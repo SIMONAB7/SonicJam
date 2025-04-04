@@ -182,7 +182,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './videos.css';
-import API_BASE_URL from './conifg'; // Adjust path as needed
+import API_BASE_URL from './config'; // Adjust path as needed
 
 interface VideoUser {
   _id: string;

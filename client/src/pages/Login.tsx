@@ -55,7 +55,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css"; // Ensure you have a CSS file for styling
-import API_BASE_URL from "../conifg";
+import API_BASE_URL from "../config";
 
 const Login = () => {
   const [email, setEmail] = useState("");

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './findPeople.css';
-import API_BASE_URL from './conifg';
+import API_BASE_URL from './config';
 import { useNavigate } from 'react-router-dom';
 
 interface User {

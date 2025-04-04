@@ -8,8 +8,16 @@ const postSchema = new mongoose.Schema({
   },
   link: { type: String, required: true },
   platform: { type: String },
-  description: { type: String }, // ✅ ADD THIS LINE
-  createdAt: { type: Date, default: Date.now }
+  description: { type: String }, 
+  createdAt: { type: Date, default: Date.now },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  comments: [
+    {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      text: String,
+      createdAt: { type: Date, default: Date.now },
+    }
+  ]
 });
 
 module.exports = mongoose.model("Post", postSchema);

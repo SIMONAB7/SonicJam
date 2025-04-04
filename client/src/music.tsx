@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import './music.css';
-import API_BASE_URL from "./conifg";
+import API_BASE_URL from "./config";
 
 Modal.setAppElement('#root'); 
 
