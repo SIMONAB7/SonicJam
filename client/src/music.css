@@ -57,4 +57,73 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
   }
-  
+/* Toggle Button */
+.filter-toggle {
+  background: linear-gradient(to right,#6c4393, #48266b);
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+.filter-toggle:hover {
+  background: linear-gradient(to right,#5f3a82, #381d51);
+}
+
+
+/* Filter Container */
+.filters-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: #402a657a;
+  padding: 12px 16px;
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+}
+
+/* Individual Filter Blocks */
+.filters-container div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+/* Labels */
+.filters-container label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #f5f0ff;
+}
+
+/* Dropdowns and Input */
+.filters-container select,
+.filters-container input {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: #e0d3f5;
+  color: #2d1b3c;
+  font-size: 14px;
+  min-width: 100px;
+  text-align: center;
+}
+.filters-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.4s ease;
+}
+
+.filters-wrapper.open {
+  max-height: 500px; /* adjust based on expected height */
+  opacity: 1;
+}
+

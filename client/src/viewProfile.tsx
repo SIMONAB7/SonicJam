@@ -3,17 +3,20 @@ import { useParams } from 'react-router-dom';
 import API_BASE_URL from './config';
 import './profile.css';
 import UserVideos from './userVideos';
-import RecentPosts from './components/recentPosts'; // ✅ reuse component
+import RecentPosts from './components/recentPosts'; //reuse component
 
 const ViewProfile: React.FC = () => {
+  //extract userID from route parameters 
   const { id } = useParams();
   const currentUserId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
 
+  //state to hold user data and follow status
   const [user, setUser] = useState<any>(null);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'videos' | 'posts'>('videos'); // ✅ tabs
+  const [activeTab, setActiveTab] = useState<'videos' | 'posts'>('videos'); // tabs
 
+  //fetch profile data for the user being viewed 
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -31,6 +34,7 @@ const ViewProfile: React.FC = () => {
     fetchUser();
   }, [id]);
 
+  //follow/unfollow toggle logic
   const handleToggleFollow = async () => {
     try {
       const endpoint = isFollowing ? 'unfollow' : 'follow';
@@ -38,7 +42,7 @@ const ViewProfile: React.FC = () => {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       });
-
+      //update UI follow state and localStorage
       setIsFollowing(!isFollowing);
       setUser((prev: any) => ({
         ...prev,
@@ -49,6 +53,7 @@ const ViewProfile: React.FC = () => {
           : 1,
       }));
 
+      //sync with localStorage following list
       const storedFollowing = localStorage.getItem('following');
       let updatedFollowing: string[] = storedFollowing ? JSON.parse(storedFollowing) : [];
 
@@ -65,11 +70,12 @@ const ViewProfile: React.FC = () => {
     }
   };
 
+  //display loading state while fetching user data
   if (!user) return <div className="profile-container">Loading profile...</div>;
 
   return (
     <div className="profile-container">
-
+      {/* banner img */}
       <div
         className="profile-banner"
         style={{
@@ -79,7 +85,7 @@ const ViewProfile: React.FC = () => {
           backgroundRepeat: 'no-repeat',
         }}
       />
-
+      {/* profile info */}
       <div className="profile-info">
         <div
           className="profile-picture"
@@ -98,7 +104,7 @@ const ViewProfile: React.FC = () => {
             <span><strong>{user.followersCount ?? 0}</strong> Followers</span>
             <span><strong>{user.followingCount ?? 0}</strong> Following</span>
           </div>
-
+          {/* show follow button if not viewing own profile */}
           {user._id !== currentUserId && (
             <button
               className={`follow-btn ${isFollowing ? 'unfollow' : 'follow'}`}
@@ -110,7 +116,7 @@ const ViewProfile: React.FC = () => {
         </div>
       </div>
 
-      {/* ✅ Tabs */}
+      {/* Tabs for videos and posts */}
       <div className="profile-tabs">
         <div
           className={`profile-tab ${activeTab === 'videos' ? 'active' : ''}`}

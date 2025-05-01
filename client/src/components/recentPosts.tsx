@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import API_BASE_URL from '../config';
 import './recentPosts.css';
 
+//interfaces for user, comment, and post structure
 interface User {
   _id: string;
   name: string;
@@ -16,7 +17,7 @@ interface Comment {
   createdAt: string;
 }
 
-interface Post {
+export interface Post {
   _id: string;
   userId: {
     _id: string;
@@ -32,40 +33,49 @@ interface Post {
 }
 
 interface Props {
-  userId?: string;
+  userId?: string;//prop to filter posts by user
 }
 
 const RecentPosts: React.FC<Props> = ({ userId }) => {
-  const [commentText, setCommentText] = useState<{ [key: string]: string }>({});
+  const [commentText, setCommentText] = useState<{ [key: string]: string }>({});//track comment input per post
   const [posts, setPosts] = useState<Post[]>([]);
   const token = localStorage.getItem("token");
   const currentUserId = localStorage.getItem("userId");
 
+
   const fetchPosts = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/posts`, {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+  
+      const endpoint =
+        userId === "liked"
+          ? `${API_BASE_URL}/api/posts?liked=true`
+          : `${API_BASE_URL}/api/posts`;
+  
+      const res = await fetch(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
       });
+  
       const data = await res.json();
-      
-      // Debug log the first comment to check structure
-      if (data[0]?.comments?.length > 0) {
-        console.log("First post's first comment:", data[0].comments[0]);
-      }
-      
-      const filtered = userId
-        ? data.filter((post: Post) => post.userId._id === userId)
-        : data;
+  
+      const filtered =
+        userId && userId !== "liked"
+          ? data.filter((post: Post) => post.userId._id === userId)
+          : data;
+  
       setPosts(filtered);
     } catch (err) {
       console.error("Error loading posts:", err);
     }
   };
   
+  //fetch posts when component mounts or userId changes
   useEffect(() => {
     fetchPosts();
   }, [userId]);
 
+  //delete post if current user is the owner
   const handleDelete = async (postId: string) => {
     try {
       await fetch(`${API_BASE_URL}/api/posts/${postId}`, {
@@ -78,6 +88,7 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
     }
   };
 
+  //like/unlike a post
   const handleLike = async (postId: string) => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/like`, {
@@ -106,6 +117,7 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
     }
   };
 
+  //submit a new comment for a post handler
   const handleComment = async (postId: string) => {
     const text = commentText[postId]?.trim();
     if (!text) return;
@@ -134,7 +146,7 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
               : post
           )
         );
-        setCommentText(prev => ({ ...prev, [postId]: '' }));
+        setCommentText(prev => ({ ...prev, [postId]: '' }));//clear input
       } else {
         const errorText = await res.text();
         console.error("Failed to post comment:", res.status, errorText);
@@ -147,7 +159,7 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
   return (
     <div className="recent-posts">
       {posts.length === 0 ? (
-        <p>No shared songs yet :(</p>
+        <p>{userId === "liked" ? "No liked posts yet :(" : "No shared songs yet :("}</p>
       ) : (
         <div className="post-list">
           {posts.map(post => (
@@ -161,15 +173,16 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
                   </button>
                 )}
               </div>
-
+              {/* description */}
               {post.description && <div className="recent-post-description">{post.description}</div>}
-
+              {/* external link to music platforms */}
               <div className="post-link">
                 <a href={post.link} target="_blank" rel="noopener noreferrer">
                   {post.platform || "Listen"}
                 </a>
               </div>
 
+              {/* like and comment section */}
               <div className="interaction-row">
                 <div className="left-actions">
                   <button onClick={() => handleLike(post._id)} className="like-button">
@@ -189,6 +202,7 @@ const RecentPosts: React.FC<Props> = ({ userId }) => {
                   <button onClick={() => handleComment(post._id)}>Post</button>
                 </div>
               </div>
+              {/* list of comments */}
               {Array.isArray(post.comments) && post.comments.length > 0 && (
                 <div className="comment-list">
                   {post.comments.map((comment, idx) => (

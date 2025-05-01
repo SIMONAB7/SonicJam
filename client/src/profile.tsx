@@ -3,6 +3,8 @@ import './profile.css';
 import UserVideos from './userVideos';
 import API_BASE_URL from "./config";
 import RecentPosts from './components/recentPosts';
+import type { Post } from './components/recentPosts'; 
+
 
 
 const Profile: React.FC = () => {
@@ -10,12 +12,15 @@ const Profile: React.FC = () => {
   //checks which tab is active to switch between shown content 
   const [activeTab, setActiveTab] = useState<'videos' | 'posts' | 'likes'>('videos');
 
-  // Load stored images 
+  // Load stored images for user profile
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [bannerImage, setBannerImage] = useState<string | null>(null);
   const [username, setUsername] = useState('');
   const [description, setDescription] = useState('');
+  //state for liked posts
+  const [likedPosts, setLikedPosts] = useState<Post[]>([]);
 
+  //fetch profile data 
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -25,7 +30,7 @@ const Profile: React.FC = () => {
       }
   
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {//"http://localhost:5000/api/auth/profile"
+        const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -40,7 +45,7 @@ const Profile: React.FC = () => {
         if (data.description) setDescription(data.description);
 
   
-        // ✅ Update state with correct image URLs
+        //update state with correct image URLs
         if (data.profileImage) {
           setProfileImage(data.profileImage);
           localStorage.setItem("profileImage", data.profileImage);
@@ -57,6 +62,7 @@ const Profile: React.FC = () => {
     fetchUserData();
   }, []);
 
+  //handle image imploads for profile and banner
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
     type: "profile" | "banner"
@@ -74,7 +80,7 @@ const Profile: React.FC = () => {
         return;
       }
   
-      const response = await fetch(`${API_BASE_URL}/api/auth/update-images`, {//"http://localhost:5000/api/auth/update-images"
+      const response = await fetch(`${API_BASE_URL}/api/auth/update-images`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,  // Include the Bearer token
@@ -104,12 +110,13 @@ const Profile: React.FC = () => {
     }
   };
 
+  //save updated user description to the backend
   const handleDescriptionUpdate = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
   
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/update-description`, {//"http://localhost:5000/api/auth/update-description"
+      const res = await fetch(`${API_BASE_URL}/api/auth/update-description`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -127,8 +134,25 @@ const Profile: React.FC = () => {
     }
   };
   
+  //fetch liked posts when the "likes" tab is active
+  useEffect(() => {
+    const fetchLikedPosts = async () => {
+      if (activeTab !== 'likes') return;
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/posts/liked`, { 
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const data = await res.json();
+        setLikedPosts(data);
+      } catch (err) {
+        console.error("Failed to load liked posts:", err);
+      }
+    };
+    fetchLikedPosts();
+  }, [activeTab]);
   
-//main body
+  
+//main body, render profile UI
   return (
     <div className="profile-container">
       {/* Banner Section */}
@@ -196,9 +220,9 @@ const Profile: React.FC = () => {
       <div className="profile-content">
         {activeTab === 'videos' && <UserVideos/>}
         {activeTab === 'posts' && <RecentPosts userId={localStorage.getItem("userId") || ''} />}
-        {activeTab === 'likes' && <p>Here are your liked posts...</p>}
+        {activeTab === 'likes' && <RecentPosts userId="liked" />}
+        </div>
       </div>
-    </div>
   );
 };
 

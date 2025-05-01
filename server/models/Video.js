@@ -7,7 +7,7 @@ const videoSchema = new mongoose.Schema({
   tuning: String,
   description: String,
   url: String,
-  isAnonymous: Boolean,
+  isAnonymous: Boolean,//allows users to post anonymously 
   type: String,
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, //reference to the user that posted the video
   createdAt: { type: Date, default: Date.now },

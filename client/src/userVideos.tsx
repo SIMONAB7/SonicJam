@@ -3,6 +3,7 @@ import axios from 'axios';
 import './videos.css';
 import API_BASE_URL from './config';
 
+//interfaces for type safety
 interface VideoUser {
   _id: string;
   name: string;
@@ -23,12 +24,12 @@ interface Video {
 }
 
 interface UserVideosProps {
-  userId?: string; // ✅ Optional prop to override logged-in user
+  userId?: string; //prop to override logged-in user
 }
 
 const UserVideos: React.FC<UserVideosProps> = ({ userId }) => {
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [expandedVideo, setExpandedVideo] = useState<string | null>(null);
+  const [videos, setVideos] = useState<Video[]>([]);//store fetched videos
+  const [expandedVideo, setExpandedVideo] = useState<string | null>(null);//track which video is expanded
   const currentUserId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -38,10 +39,11 @@ const UserVideos: React.FC<UserVideosProps> = ({ userId }) => {
         if (Array.isArray(res.data)) {
           const isViewingOwnProfile = !userId || userId === currentUserId;
         
+          //filter videos by user and privacy settings
           const userVideos = res.data.filter((video: Video) => {
             const isVideoFromUser = video.user?._id === (userId || currentUserId);
             if (!isVideoFromUser) return false;
-            if (!isViewingOwnProfile && video.isAnonymous) return false;
+            if (!isViewingOwnProfile && video.isAnonymous) return false;//hide anonymous videos from others on profile
             return true;
           });
         

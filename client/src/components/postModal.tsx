@@ -7,13 +7,15 @@ interface Props {
 }
 
 const PostModal: React.FC<Props> = ({ onClose }) => {
+  //form state for link and description input
   const [link, setLink] = useState('');
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const token = localStorage.getItem("token");
 
+  //function to handle form submission
   const handleSubmit = async () => {
-    if (!link) return;
+    if (!link) return; //do not allow empty link field
 
     try {
       setSubmitting(true);
@@ -26,10 +28,11 @@ const PostModal: React.FC<Props> = ({ onClose }) => {
         body: JSON.stringify({ link, description }),
       });
 
+      //reset input fields and close modal
       setLink('');
       setDescription('');
       onClose();
-      window.location.reload();
+      window.location.reload();//refresh to show the new post
     } catch (err) {
       console.error("Post failed:", err);
     } finally {

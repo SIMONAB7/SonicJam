@@ -1,100 +1,34 @@
-// // const jwt = require('jsonwebtoken');
-
-// // module.exports = function (req, res, next) {
-// //   const token = req.header('Authorization');
-
-// //   if (!token) {
-// //     console.log("❌ No Token Provided");
-// //     return res.status(401).json({ msg: "No token, authorization denied" });
-// //   }
-
-// //   try {
-// //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-// //     req.user = decoded.id;
-// //     next();
-// //   } catch (err) {
-// //     console.error("❌ Invalid Token:", err);
-// //     res.status(401).json({ msg: "Invalid token" });
-// //   }
-// // };
-
-// const jwt = require('jsonwebtoken');
-
-// module.exports = function (req, res, next) {
-//   const authHeader = req.header('Authorization');
-
-//   if (!authHeader) {
-//     console.log(" No Token Provided");
-//     return res.status(401).json({ msg: "No token, authorization denied" });
-//   }
-
-//   // check if token has "Bearer " prefix
-//   const token = authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : authHeader;
-
-//   try {
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     req.user = decoded.id;  // ensure req.user contains the correct user ID
-//     next();
-//   } catch (err) {
-//     console.error(" Invalid Token:", err);
-//     res.status(401).json({ msg: "Invalid token" });
-//   }
-// };
-
-
-// const jwt = require('jsonwebtoken');
-
-// const authMiddleware = function (req, res, next) {
-//   const authHeader = req.header('Authorization');
-
-//   if (!authHeader) {
-//     console.log("No Token Provided");
-//     return res.status(401).json({ msg: "No token, authorization denied" });
-//   }
-
-//   const token = authHeader.startsWith("Bearer ")
-//     ? authHeader.split(" ")[1]
-//     : authHeader;
-
-//   try {
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     req.user = { id: decoded.id };
-//     next();
-//   } catch (err) {
-//     console.error("Invalid Token:", err);
-//     res.status(401).json({ msg: "Invalid token" });
-//   }
-// };
-
-// module.exports = authMiddleware;
-
 const jwt = require('jsonwebtoken');
 
+//middleware to authenticate and decode JWT
 const authMiddleware = function (req, res, next) {
   const authHeader = req.header('Authorization');
 
+  //no token provided
   if (!authHeader) {
     console.log("No Token Provided");
     return res.status(401).json({ msg: "No token, authorization denied" });
   }
 
+  //extract token from bearer<token> format
   const token = authHeader.startsWith("Bearer ")
     ? authHeader.split(" ")[1]
     : authHeader;
 
   try {
+    //verify token with secret
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ Add both forms of access:
+    // Add both forms of access: attach user ID to request in differnt formats
     req.user = {
       id: decoded.id,   // for routes expecting req.user.id
-      _id: decoded.id   // for Mongoose-style consistency (optional but nice)
+      _id: decoded.id   // for Mongoose-style consistency 
     };
 
-    // ✅ Also set req.userId directly for routes that just use it raw
+    // set req.userId directly for routes that just use it raw
     req.userId = decoded.id;
 
-    next();
+    next();//proceed to next middleware/route
   } catch (err) {
     console.error("Invalid Token:", err);
     res.status(401).json({ msg: "Invalid token" });
